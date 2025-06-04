@@ -1,27 +1,30 @@
-# Use a lightweight base image with Java
+# Build stage
 FROM eclipse-temurin:21-jdk-jammy as build
 
-# Set the working directory
+# Set working directory in the container
 WORKDIR /app
 
-# Copy Maven/Gradle wrapper files and build descriptor files
+# Copy Maven wrapper and dependencies
 COPY mvnw* pom.xml ./
 COPY .mvn .mvn
 COPY src src
 
+# Add execute permission to mvnw wrapper
+RUN chmod +x ./mvnw
+
 # Build the app
 RUN ./mvnw clean package -DskipTests
 
-# Use a minimal JRE base image for runtime
+# Runtime stage
 FROM eclipse-temurin:21-jre-jammy
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the jar file from the builder stage
+# Copy the built jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port your Spring Boot app runs on
+# Expose the port the app runs on
 EXPOSE 8080
 
 # Run the application
