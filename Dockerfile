@@ -1,5 +1,5 @@
 # Use a lightweight base image with Java
-FROM eclipse-temurin:17-jdk-jammy as build
+FROM eclipse-temurin:21-jdk-jammy as build
 
 # Set the working directory
 WORKDIR /app
@@ -13,7 +13,7 @@ COPY src src
 RUN ./mvnw clean package -DskipTests
 
 # Use a minimal JRE base image for runtime
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 
 # Set the working directory
 WORKDIR /app
