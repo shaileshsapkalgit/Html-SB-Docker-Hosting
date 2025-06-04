@@ -1,31 +1,33 @@
-# Build stage
+# Use an OpenJDK base image for building the app
 FROM eclipse-temurin:21-jdk-jammy as build
 
-# Set working directory in the container
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy Maven wrapper and dependencies
-COPY mvnw* pom.xml ./
+# Copy the Maven wrapper and pom.xml files
+COPY mvnw pom.xml ./
 COPY .mvn .mvn
+
+# Copy the entire source code
 COPY src src
 
-# Add execute permission to mvnw wrapper
+# Add execute permission to mvnw
 RUN chmod +x ./mvnw
 
-# Build the app
+# Build the application using Maven
 RUN ./mvnw clean package -DskipTests
 
-# Runtime stage
+# Use a smaller JRE image for runtime
 FROM eclipse-temurin:21-jre-jammy
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the built jar from the build stage
+# Copy the jar file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port the app runs on
+# Expose port 8080
 EXPOSE 8080
 
-# Run the application
+# Command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
