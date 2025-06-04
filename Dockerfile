@@ -1,33 +1,14 @@
-# Use an OpenJDK base image for building the app
-FROM eclipse-temurin:21-jdk-jammy as build
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the Maven wrapper and pom.xml files
-COPY mvnw pom.xml ./
-COPY .mvn .mvn
-
-# Copy the entire source code
-COPY src src
-
-# Add execute permission to mvnw
-RUN chmod +x ./mvnw
-
-# Build the application using Maven
-RUN ./mvnw clean package -DskipTests
-
-# Use a smaller JRE image for runtime
+# Use an official Java 21 runtime as a parent image
 FROM eclipse-temurin:21-jre-jammy
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the jar file from the build stage
-COPY --from=build /app/target/*.jar app.jar
+# Copy the jar file into the container
+COPY target/my-springboot-app.jar /app/my-springboot-app.jar
 
-# Expose port 8080
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "my-springboot-app.jar"]
+
+# Expose the port that the app will run on
 EXPOSE 8080
-
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
