@@ -1,5 +1,5 @@
-# Use an official Java runtime as a parent image
-FROM openjdk:11-jre-slim
+# Use an official Java 21 runtime as a parent image
+FROM openjdk:21-jre-slim
 
 # Set the working directory
 WORKDIR /app
