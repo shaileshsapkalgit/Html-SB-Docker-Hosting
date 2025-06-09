@@ -1,14 +1,14 @@
-# Use an official Java 21 runtime as a parent image
-FROM openjdk:21-jre-slim
+# Use an official Java 17 runtime as a parent image
+FROM openjdk:17-jdk-slim
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the jar file into the container
+# Copy the JAR file from your local machine into the container
 COPY target/my-springboot-app.jar /app/my-springboot-app.jar
+
+# Expose the port your Spring Boot app runs on
+EXPOSE 8080
 
 # Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "my-springboot-app.jar"]
-
-# Expose the port that the app will run on
-EXPOSE 8080
